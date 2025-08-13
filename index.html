@@ -17,11 +17,9 @@ html,body{ height:100% }
 body { cursor: url("cursor.png"), auto !important; }
 body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:#000; color:#fff; overflow:hidden }
 
-/* СЛОЙ 0: Размытый фон bg.jpg — всегда под видео */
 .bg-backdrop{ position:fixed; inset:0; z-index:0; overflow:hidden; background:#05070c; transform:translateZ(0); will-change:transform }
 .bg-backdrop::after{ content:""; position:absolute; inset:0; background:url("bg.jpg") center/cover no-repeat; filter:blur(22px) saturate(120%) brightness(.9); opacity:.9; pointer-events:none; transform:scale(1.06) }
 
-/* Лёгкая тряска фона после клика */
 @keyframes bgWobble{
   0%{transform:translate(0,0)}20%{transform:translate(1.2px,-.8px)}
   40%{transform:translate(-1.4px,1px)}60%{transform:translate(1px,1.2px)}
@@ -29,7 +27,6 @@ body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; back
 }
 .bg-shake .bg-backdrop{ animation:bgWobble 160ms steps(2,end) infinite }
 
-/* СЛОЙ 1: Видео (двойной плеер для кросс‑фейда) */
 .video-wrap{ position:fixed; inset:0; z-index:10; opacity:0; transition:opacity .45s ease; background:transparent }
 .video-on .video-wrap{ z-index:30 }
 .video-wrap video {
@@ -38,13 +35,11 @@ body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; back
 #bgVideoA { opacity:1 }
 #bgVideoB { opacity:0 }
 
-/* Кнопка входа */
 .enter{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:transparent; color:#eaeaea; border:none; outline:none; box-shadow:none; cursor: url("cursor.png"), auto !important; font-size:clamp(20px,4vw,36px); letter-spacing:.5px; z-index:20; will-change:transform; transform:translateZ(0) }
 .enter:hover{ color:#fff }
 .label{ position:relative; padding:10px 18px; background:rgba(0,0,0,.45); border-radius:12px; backdrop-filter:saturate(120%) blur(6px); -webkit-backdrop-filter:saturate(120%) blur(6px); overflow:hidden }
 .enter { font-family: 'Playfair Display', 'Didot', 'Bodoni MT', serif !important; font-weight: 700 !important; letter-spacing: 1.2px; text-transform: uppercase; }
 
-/* Глитч текста — после клика */
 .glitch{ position:relative; display:inline-block }
 .glitch::before,.glitch::after{ content:attr(data-text); position:absolute; inset:0; pointer-events:none; opacity:0 }
 .glitch-on .glitch::before{ opacity:1; color:#f33; mix-blend-mode:screen; animation:txtShiftRed 140ms steps(2,end) infinite }
@@ -52,7 +47,6 @@ body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; back
 @keyframes txtShiftRed{0%{transform:translate(3px,-2px)}50%{transform:translate(-3px,2px)}100%{transform:translate(3px,-2px)}}
 @keyframes txtShiftCyan{0%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}100%{transform:translate(-3px,2px)}}
 
-/* Снежинки */
 .star{ position:fixed; left:0; top:0; width:8px; height:8px; border-radius:50%; background:#ffffffd0; filter:drop-shadow(0 0 4px #fff); pointer-events:none; opacity:0; transition:opacity .2s ease; will-change:transform,opacity,top,left; z-index:4 }
 .fx-on .star::before,.fx-on .star::after{ content:""; position:absolute; inset:0; border-radius:50%; opacity:.65; mix-blend-mode:screen; pointer-events:none }
 .fx-on .star::before{ background:#f33; animation:starJ1 140ms steps(2,end) infinite }
@@ -60,7 +54,6 @@ body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; back
 @keyframes starJ1{0%{transform:translate(3px,-2px) scale(1.02)}50%{transform:translate(-4px,3px) scale(1.05)}100%{transform:translate(3px,-2px) scale(1.02)}}
 @keyframes starJ2{0%{transform:translate(-3px,2px)}50%{transform:translate(4px,-3px)}100%{transform:translate(-3px,2px)}}
 
-/* Карточка */
 .player-card {
   position: fixed;
   left: 50%;
@@ -87,7 +80,6 @@ body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; back
 }
 .player-card.show { opacity: 1; pointer-events: auto; }
 
-/* Плавание */
 .float-wrap { animation: floatY 3s ease-in-out .8s infinite; will-change: transform; }
 @keyframes floatY { 0%{transform:translateY(0)} 50%{transform:translateY(-4px)} 100%{transform:translateY(0)} }
 
@@ -102,7 +94,6 @@ body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; back
 .name { white-space:nowrap; font-weight:700; letter-spacing:.3px; font-size:20px; line-height:1.1; }
 .status { margin-top:8px; font-size:14px; color:#bfc9d6; letter-spacing:.4px; opacity:.95; white-space:nowrap; line-height:1.2; }
 
-/* Радужная рамка карточки */
 .player-card::before{
   content:""; position:absolute; inset:-2px; padding:2px;
   background:linear-gradient(45deg,#4facfe 0%,#00f2fe 25%,#ff6b9d 50%,#c471f5 75%,#4facfe 100%);
@@ -121,7 +112,6 @@ body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; back
 @keyframes cardShine{ 0%{opacity:0} 15%{opacity:.95} 100%{opacity:0} }
 .player-card.show::after{ animation: cardShine 1s ease .2s forwards; }
 
-/* Панель громкости */
 .volume-panel{
   position:fixed; left:20px; top:20px; z-index:60; border-radius:16px;
   background:rgba(10,10,12,.68); box-shadow:0 16px 40px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.08);
@@ -140,21 +130,17 @@ body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; back
 .vol-btn:hover{ transform:scale(1.06); background:rgba(255,255,255,.1); box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 2px rgba(255,255,255,.14) inset; }
 .ico{ width:18px; height:18px; fill:currentColor; }
 
-/* Кастомный курсор */
 html, body, a, button, [role="button"], input, select, textarea, label, summary, details, video, audio, canvas, iframe, div, span, p, h1, h2, h3, h4, h5, h6, section, header, footer, main, nav, article, aside, ul, ol, li, table, tr, td, th, form, fieldset, legend, *:hover, *:active, *:focus { cursor: url("cursor.png") 16 16, auto !important; }
 button, .vol-btn, .enter, input[type="range"], input[type="range"]::-webkit-slider-thumb { cursor: url("cursor.png") 16 16, pointer !important; }
 input[type="text"], input[type="search"], input[type="password"], input[type="email"], input[type="url"], textarea { cursor: url("cursor.png") 16 16, text !important; }
 
-/* Водяной знак */
 .video-watermark{ display:none; position:fixed; top:10px; right:12px; z-index:40; font-size:12px; line-height:1; color:rgba(200,200,200,.55); letter-spacing:.2px; user-select:none; pointer-events:none; }
 .video-on .video-watermark{ display:block; }
 
-/* ZXC GIF */
 .zxc-gif{ position:fixed; left:50%; top:50%; transform:translate(-50%, calc(-50% - 120px)); width:120px; height:auto; z-index:60; opacity:0; pointer-events:none; filter:drop-shadow(0 6px 18px rgba(0,0,0,.45)); transition:opacity .35s ease, transform .35s ease; }
 .player-card.show ~ .zxc-gif, .video-on ~ .zxc-gif{ opacity:1; }
 .player-card:hover ~ .zxc-gif{ transform:translate(-50%, calc(-50% - 128px)); }
 
-/* Соцкнопки Telegram/Discord под карточкой */
 .tg-btn, .discord-btn {
   position: fixed;
   left: 50%;
@@ -186,13 +172,11 @@ input[type="text"], input[type="search"], input[type="password"], input[type="em
   box-shadow: 0 18px 40px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.16);
 }
 
-/* Раздельный трансформ для контейнеров */
 .tg-btn:hover { transform: translate(calc(-50% - 35px), 75px) scale(1.06); }
 .discord-btn:hover { transform: translate(calc(-50% + 35px), 75px) scale(1.06); }
 .tg-btn:active { transform: translate(calc(-50% - 35px), 75px) scale(0.96); }
 .discord-btn:active { transform: translate(calc(-50% + 35px), 75px) scale(0.96); }
 
-/* Иконки: раздельный ховер */
 .tg-ico, .discord-ico {
   width: 26px;
   height: 26px;
@@ -203,7 +187,6 @@ input[type="text"], input[type="search"], input[type="password"], input[type="em
 .tg-btn:hover .tg-ico { transform: scale(1.18); }
 .discord-btn:hover .discord-ico { transform: scale(1.18); }
 
-/* Tooltips для кнопок */
 .tg-tooltip, .discord-tooltip {
   position: absolute;
   bottom: -32px;
@@ -252,7 +235,6 @@ input[type="text"], input[type="search"], input[type="password"], input[type="em
   }
 }
 
-/* Кнопка пропустить — центр снизу */
 .skip-button {
 position: fixed;
 left: 45%;
@@ -312,7 +294,6 @@ pointer-events: auto;
   display: block;
 }
 
-/* Прогресс-бар исчезновения */
 .skip-progress {
   position: absolute;
   bottom: 0;
@@ -330,12 +311,10 @@ pointer-events: auto;
   transform: scaleX(0);
 }
 
-/* Эффект нажатия */
 .skip-button:active .skip-inner {
   transform: scale(0.98);
 }
 
-/* Анимация появления с задержкой */
 @keyframes skipSlideIn {
   0% {
     opacity: 0;
@@ -355,7 +334,6 @@ pointer-events: auto;
   animation: skipSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Пульсация для привлечения внимания */
 .skip-button.show::before {
   content: "";
   position: absolute;
@@ -1042,3 +1020,4 @@ bindSkipToVideoStart();
 </script>
 </body>
 </html>
+
