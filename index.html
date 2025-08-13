@@ -223,32 +223,183 @@ input[type="text"], input[type="search"], input[type="password"], input[type="em
 .discord-btn.copied .discord-tooltip {
   opacity: 1;
 }
+.animated-text span,
+.animated-text .verified-badge {
+  display: inline-block !important;
+  animation: letterRainbow 3s ease-in-out var(--delay) infinite !important;
+  filter: drop-shadow(0 0 8px currentColor) !important;
+  vertical-align: baseline !important;
+  transform-origin: center bottom !important;
+}
+
+
+@keyframes letterRainbow {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    color: #e9ecf1;
+  }
+  25% {
+    transform: translateY(-10px) scale(1.1);
+    color: #4facfe;
+  }
+  50% {
+    transform: translateY(-15px) scale(1.15);
+    color: #ff6b9d;
+  }
+  75% {
+    transform: translateY(-10px) scale(1.1);
+    color: #c471f5;
+  }
+}
+
+/* Кнопка пропустить — центр снизу */
+.skip-button {
+position: fixed;
+left: 45%;
+bottom: 30px;
+transform: translate(-50%, 20px) scale(0.9);
+z-index: 55;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.4s cubic-bezier(0.4,0,0.2,1), transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.skip-button.show {
+opacity: 1;
+transform: translate(-50%, 0) scale(1);
+pointer-events: auto;
+}
+.skip-button.hide {
+  opacity: 0;
+  transform: translate(-50%, 10px) scale(0.95);
+  pointer-events: none;
+  transition: opacity 400ms cubic-bezier(0.4,0,0.2,1),
+  transform 400ms cubic-bezier(0.4,0,0.2,1);
+}
+
+.skip-inner {
+  position: relative;
+  background: rgba(10, 10, 12, 0.85);
+  border-radius: 16px;
+  padding: 12px 18px;
+  color: #e9ecf1;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: url("cursor.png") 16 16, pointer !important;
+  box-shadow:
+    0 12px 32px rgba(0,0,0,0.4),
+    inset 0 0 0 1px rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px) saturate(135%);
+  -webkit-backdrop-filter: blur(12px) saturate(135%);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.skip-button:hover .skip-inner {
+  transform: scale(1.05);
+  background: rgba(15, 15, 17, 0.9);
+  box-shadow:
+    0 16px 40px rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(255,255,255,0.15);
+}
+
+.skip-text {
+  position: relative;
+  z-index: 2;
+  display: block;
+}
+
+/* Прогресс-бар исчезновения */
+.skip-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4facfe, #c471f5);
+  border-radius: 0 0 14px 14px;
+  width: 100%;
+  transform-origin: left;
+  transform: scaleX(1);
+  transition: transform 5.2s linear;
+}
+
+.skip-button.countdown .skip-progress {
+  transform: scaleX(0);
+}
+
+/* Эффект нажатия */
+.skip-button:active .skip-inner {
+  transform: scale(0.98);
+}
+
+/* Анимация появления с задержкой */
+@keyframes skipSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.8);
+  }
+  60% {
+    opacity: 0.7;
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.skip-button.animate-in {
+  animation: skipSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Пульсация для привлечения внимания */
+.skip-button.show::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 18px;
+  padding: 2px;
+  background: linear-gradient(45deg, rgba(79,172,254,0.3), rgba(196,113,245,0.3));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  animation: skipGlow 2s ease-in-out infinite;
+}
+
+@keyframes skipGlow {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
 </style>
 </head>
 <body>
 
-<!-- СЛОЙ 0: Размытый фон -->
+
 <div class="bg-backdrop" aria-hidden="true"></div>
 
-<!-- Видео (двойной плеер для кросс‑фейда) -->
+
 <div id="videoWrap" class="video-wrap" aria-hidden="true">
   <video id="bgVideoA" playsinline preload="auto" muted></video>
   <video id="bgVideoB" playsinline preload="auto" muted></video>
 </div>
 
-<!-- Маленькая надпись поверх видео -->
+
 <div class="video-watermark" aria-hidden="true">ebal vaшиx mam</div>
 
-<!-- ZXC GIF -->
+
 <img id="zxcGif" class="zxc-gif" src="zxc.gif" alt="" aria-hidden="true"/>
 
-<!-- Звук клика -->
+
 <audio id="crunchAudio" preload="auto" crossorigin="anonymous">
   <source src="crunch.mp3" type="audio/mpeg"/>
   <source src="crunch.ogg" type="audio/ogg"/>
 </audio>
 
-<!-- Карточка игрока -->
+
 <div id="playerCard" class="player-card" aria-hidden="true">
   <div class="float-wrap">
     <div class="card-inner">
@@ -260,15 +411,17 @@ input[type="text"], input[type="search"], input[type="password"], input[type="em
       </div>
       <div class="content">
         <div class="meta">
-          <div class="name">EzHype
-            <span class="verified-badge" title="Verified">
-              <span class="verified-circle">
-                <svg class="verified-check" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
-                  <circle cx="10" cy="10" r="9" fill="#4facfe" stroke="#fff" stroke-width="2"/>
-                  <path d="M6.5 10.5l2 2.2 4-4.2" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-            </span>
+          <div class="name animated-text">
+            <span style="--delay: 0s">E</span>
+            <span style="--delay: 0.1s">z</span>
+            <span style="--delay: 0.2s">H</span>
+            <span style="--delay: 0.3s">y</span>
+            <span style="--delay: 0.4s">p</span>
+            <span style="--delay: 0.5s">e</span>
+            <svg class="verified-badge" style="--delay: 0.6s" width="16" height="16" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="9" fill="#4facfe" stroke="#fff" stroke-width="2"/>
+              <path d="M6.5 10.5l2 2.2 4-4.2" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
           <div class="badge" aria-label="verified">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 16.2 5.8 12.5l1.4-1.4 2.3 2.3 5.3-5.3 1.4 1.4-6.7 6.7z"/></svg>
@@ -280,7 +433,7 @@ input[type="text"], input[type="search"], input[type="password"], input[type="em
   </div>
 </div>
 
-<!-- Кнопки соцсетей (Telegram/Discord) -->
+
 <a id="tgBtn" class="tg-btn" href="#" aria-label="Telegram">
   <svg viewBox="0 0 24 24" class="tg-ico" aria-hidden="true">
     <path fill="currentColor" d="M9.03 15.22 8.9 18.5c.33 0 .47-.14.64-.3l1.54-1.47 3.2 2.34c.59.32 1.02.15 1.18-.55l2.14-10.03c.22-.98-.35-1.37-.99-1.13L4.9 9.69c-.96.37-.94.9-.16 1.14l3.02.94 6.99-4.41c.33-.2.63-.09.38.13"/>
@@ -295,7 +448,7 @@ input[type="text"], input[type="search"], input[type="password"], input[type="em
   <span class="discord-tooltip">Скопировано</span>
 </a>
 
-<!-- Панель громкости -->
+
 <div id="volumePanel" class="volume-panel" aria-label="volume control" aria-hidden="true">
   <div class="vol-inner">
     <button id="muteBtn" class="vol-btn" aria-label="mute/unmute" title="Mute">
@@ -306,15 +459,23 @@ input[type="text"], input[type="search"], input[type="password"], input[type="em
   </div>
 </div>
 
-<!-- Кнопка входа -->
+
 <button id="enterBtn" class="enter" aria-label="Enter">
   <span id="labelBox" class="label">
     <span class="glitch" data-text="click to enter...">click to enter...</span>
   </span>
 </button>
 
+
+<div id="skipButton" class="skip-button" aria-hidden="true">
+  <div class="skip-inner">
+    <span class="skip-text">SPACE - пропустить</span>
+    <div class="skip-progress"></div>
+  </div>
+</div>
+
 <script>
-// --- Снежинки ---
+
 const BASE = { TARGET_COUNT:18, SPAWN_INTERVAL:120, SIZE_MIN:4, SIZE_MAX:12, SPEED_Y_MIN:60, SPEED_Y_MAX:140, SPEED_X_MIN:-30, SPEED_X_MAX:30, SWAY_AMPL_MIN:6, SWAY_AMPL_MAX:20, SWAY_FREQ_MIN:0.4, SWAY_FREQ_MAX:1.2 };
 const ULTRA = { TARGET_COUNT:60, SPAWN_INTERVAL:1000, SIZE_MIN:4, SIZE_MAX:12, SPEED_Y_MIN:260, SPEED_Y_MAX:1020, SPEED_X_MIN:-180, SPEED_X_MAX:180, SWAY_AMPL_MIN:10, SWAY_AMPL_MAX:30, SWAY_FREQ_MIN:1.0, SWAY_FREQ_MAX:2.2 };
 let CFG = { ...BASE };
@@ -362,7 +523,7 @@ function switchSnowToUltra(){
   spawnBurst();
 }
 
-// --- Элементы ---
+
 const btn = document.getElementById('enterBtn');
 const labelBox = document.getElementById('labelBox');
 const audioEl = document.getElementById('crunchAudio');
@@ -378,7 +539,7 @@ const COLLAPSE_DELAY = 220;
 const SHAKE_AMPL_X=10, SHAKE_AMPL_Y=20, SHAKE_ROT=12;
 let handled=false, shaking=false;
 
-// --- Аудио фейд для клика ---
+
 function fadeAudio(el, from, to, ms, onDone){
   const start = performance.now(), delta = to - from;
   function step(now){
@@ -392,13 +553,13 @@ function playCrunchWithFade(){
   try{
     audioEl.pause(); audioEl.currentTime=0; audioEl.volume=0.0;
     audioEl.play().catch(()=>{});
-    fadeAudio(audioEl,0.0,1.0,580);
-    setTimeout(()=>fadeAudio(audioEl,audioEl.volume,0.0,1220,()=>audioEl.pause()),1180);
+    fadeAudio(audioEl,0.0,1.0,600);
+    setTimeout(()=>fadeAudio(audioEl,audioEl.volume,0.0,400,()=>audioEl.pause()),1200);
   }catch(e){}
 }
 
-// --- Громкость ---
-let lastUserVolume = 0.7; // исходное значение слайдера (70%)
+
+let lastUserVolume = 0.7; 
 function setVolumeAll(v){
   const vol = Math.max(0, Math.min(1, v));
   vA.volume = vol;
@@ -416,8 +577,8 @@ function updateMuteIcon(muted){
   muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
 }
 
-// --- Контроль раскрытия панели громкости ---
-const HIDE_DELAY = 220;
+
+const HIDE_DELAY = 60;
 let collapseTimer = null, draggingVolume = false, idleSliderTimer = null;
 const lastPointer = { x: -9999, y: -9999 };
 function withinRect(x, y, r, pad = 0){ return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad; }
@@ -490,7 +651,7 @@ if (volumePanel){
   }
 }
 
-// --- Очистка UI (кнопка/снег) ---
+
 function purgeUI(){
   for(const obj of Array.from(stars)){ obj.el.remove(); stars.delete(obj); }
   created = 0;
@@ -501,17 +662,17 @@ function purgeUI(){
   labelBox.classList.remove('glitch-on');
 }
 
-// --- Плейлист и кросс‑фейд ---
+
 const PLAYLIST = ["video1.mp4", "video2.mp4", "video3.mp4"];
 let segIndex = 0;
-let activeId = 'A'; // 'A' | 'B'
-const CROSS_MS = 550;       // длительность фейда
-const SAFE_OVERLAP = 0.8;   // за сколько секунд до конца начинать
+let activeId = 'A'; 
+const CROSS_MS = 550;       
+const SAFE_OVERLAP = 0.8;   
 
 function elActive(){ return activeId==='A' ? vA : vB }
 function elNext(){ return activeId==='A' ? vB : vA }
 
-// Предзагрузка следующего сегмента
+
 function preloadNext(i){
   return new Promise(res=>{
     const v = elNext();
@@ -524,7 +685,7 @@ function preloadNext(i){
   });
 }
 
-// Наблюдатель времени
+
 function bindTimeWatcher(){
   const v = elActive();
   v.ontimeupdate = null;
@@ -539,7 +700,7 @@ function bindTimeWatcher(){
   };
 }
 
-// Кросс‑фейд
+
 function crossfade(){
   const cur = elActive();
   const nxt = elNext();
@@ -557,7 +718,7 @@ function crossfade(){
   }, CROSS_MS);
 }
 
-// Старт плейлиста
+
 async function startPlaylist(){
   const initial = Math.max(0, Math.min(1, (lastUserVolume || 0.7)));
   vA.volume = initial; vB.volume = initial;
@@ -579,7 +740,7 @@ async function startPlaylist(){
   await preloadNext(nextIndex);
 }
 
-// Появление карточки навсегда
+
 const CARD_APPEAR_TIME = 5.5;
 let cardShown = false;
 function showPlayerCardForever(){
@@ -596,7 +757,7 @@ function showPlayerCardForever(){
   const zxc = document.getElementById('zxcGif'); if(zxc) zxc.style.opacity = '1';
 }
 
-// Привязка появления к времени первого сегмента
+
 function bindCardToVideoTime(){
   const v = vA;
   if(!v) return;
@@ -607,7 +768,7 @@ function bindCardToVideoTime(){
   });
 }
 
-// Слайдер громкости / Mute
+
 if(volumeRange){
   volumeRange.addEventListener('input', (e)=>{
     const v = Number(e.target.value)/100;
@@ -638,7 +799,7 @@ if(muteBtn){
   });
 }
 
-// Кнопка Enter
+
 function loopShake(){
   const dx=(Math.random()*2-1)*SHAKE_AMPL_X;
   const dy=(Math.random()*2-1)*SHAKE_AMPL_Y;
@@ -657,13 +818,16 @@ btn.addEventListener('click', ()=>{
     document.body.classList.add('video-on');
     videoWrap.style.opacity=1;
     await startPlaylist();
+    
+    if (typeof bindSkipToVideoStart === 'function') bindSkipToVideoStart();
+
     bindCardToVideoTime();
     purgeUI();
     document.body.classList.remove('bg-shake');
-  }, 2000);
+  }, 1300);
 });
 
-// Title animation
+
 document.title = "@Hype";
 const titleVariants = ["@EzHype","@EzHyp","@EzHy","@EzH","@Ez","@E","@","@","@E","@Ez","@EzH","@EzHy","@EzHyp","@EzHype"];
 let titleAnimTimer = null, titleAnimIndex = 0, titleAnimActive = false;
@@ -680,12 +844,12 @@ btn.addEventListener('click', () => {
   }
 });
 
-// Init
+
 if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', start); }
 else { start(); }
 document.addEventListener('contextmenu', e => e.preventDefault());
 
-// Копирование @ezhype в Telegram
+
 (function(){
   const tgBtn = document.getElementById('tgBtn');
   if(!tgBtn) return;
@@ -711,7 +875,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
   });
 })();
 
-// Копирование discord никнейма
+
 (function(){
   const discordBtn = document.getElementById('discordBtn');
   if(!discordBtn) return;
@@ -735,6 +899,145 @@ document.addEventListener('contextmenu', e => e.preventDefault());
       tipTimer = setTimeout(()=> discordBtn.classList.remove('copied'), 1200);
     }
   });
+})();
+
+
+(function(){
+const skipBtn = document.getElementById('skipButton');
+if (!skipBtn) return;
+
+let skipTimer = null;
+let skipShown = false;
+let initialized = false;
+let removed = false; 
+let cleanupFns = [];
+
+function on(el, ev, fn, opts){
+el.addEventListener(ev, fn, opts);
+cleanupFns.push(() => el.removeEventListener(ev, fn, opts));
+}
+
+function showSkipButton() {
+if (removed || skipShown) return;
+skipShown = true;
+
+skipBtn.setAttribute('aria-hidden', 'false');
+skipBtn.classList.remove('hide','countdown','animate-in');
+void skipBtn.offsetWidth; 
+skipBtn.classList.add('show','animate-in');
+
+
+setTimeout(() => {
+  if (skipShown) skipBtn.classList.add('countdown');
+}, 50);
+
+
+skipTimer = setTimeout(() => {
+  hideSkipButton(true, /*markRemoved=*/false);
+}, 5200);
+}
+
+function hideSkipButton(smooth = false, markRemoved = false) {
+if (!skipShown) return;
+skipShown = false;
+if (skipTimer) { clearTimeout(skipTimer); skipTimer = null; }
+
+if (markRemoved) removed = true;
+
+skipBtn.classList.remove('show','countdown','animate-in');
+skipBtn.classList.add('hide');
+
+setTimeout(() => {
+  skipBtn.setAttribute('aria-hidden', 'true');
+}, smooth ? 400 : 0);
+}
+
+function skipToCard() {
+
+hideSkipButton(false, /*markRemoved=*/true);
+showPlayerCardForever();
+
+const activeVideo = elActive();
+if (activeVideo && segIndex === 0) {
+  try {
+    activeVideo.currentTime = Math.min(CARD_APPEAR_TIME + 0.5, activeVideo.duration || CARD_APPEAR_TIME + 0.5);
+  } catch(e) {}
+}
+}
+
+
+function bindSkipToVideoStart() {
+if (initialized) return;
+initialized = true;
+
+const v = vA;
+if (!v) {
+console.warn('[skip] vA not found');
+return;
+}
+
+const safeShow = () => {
+if (!cardShown && segIndex === 0 && !removed) {
+
+showSkipButton();
+}
+};
+
+
+const onPlaying = () => {
+
+safeShow();
+v.removeEventListener('playing', onPlaying);
+};
+on(v, 'playing', onPlaying);
+
+const onFirstTimeUpdate = () => {
+safeShow();
+v.removeEventListener('timeupdate', onFirstTimeUpdate);
+};
+on(v, 'timeupdate', onFirstTimeUpdate, { once: true });
+
+setTimeout(() => {
+if (!skipShown && segIndex === 0 && !removed && !cardShown) {
+showSkipButton();
+}
+}, 500);
+
+const onGuardTimeUpdate = () => {
+if (segIndex !== 0) {
+hideSkipButton(true, false);
+return;
+}
+if ((v.currentTime || 0) >= CARD_APPEAR_TIME) {
+hideSkipButton(true, false);
+}
+};
+on(v, 'timeupdate', onGuardTimeUpdate);
+}
+
+
+on(skipBtn, 'click', (e) => {
+e.preventDefault();
+if (!removed) skipToCard();
+});
+
+on(document, 'keydown', (e) => {
+if (e.code === 'Space' && skipShown && !removed) {
+e.preventDefault();
+skipToCard();
+}
+});
+
+
+window.bindSkipToVideoStart = bindSkipToVideoStart;
+
+
+const originalBindCardToVideoTime = bindCardToVideoTime;
+bindCardToVideoTime = function() {
+originalBindCardToVideoTime();
+
+bindSkipToVideoStart();
+};
 })();
 </script>
 </body>
